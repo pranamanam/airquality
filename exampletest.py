@@ -23,18 +23,18 @@ seed = 7
 
 numpy.random.seed(seed)
 
-df = pd.read_csv("bAQ2016.csv")
+df = pd.read_csv("formatted.csv")
 
 ds = df.values
 
-X = ds[:,3:7]
-Y = ds[:,7]
+X = ds[:,1:73]
+Y = ds[:,73:96]
 
 
 # create model
 model = Sequential()
-model.add(Dense(20, input_dim=4, init='normal', activation='relu'))
-model.add(Dense(1, batch_input_shape=(len(X), 4)))
+model.add(Dense(72, input_dim=72, init='normal', activation='relu'))
+model.add(Dense(23, init='normal'))
 
 # Compile model
 model.compile(loss='mean_squared_error', optimizer='adam', metrics=['accuracy'])
