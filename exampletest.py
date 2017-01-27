@@ -24,12 +24,6 @@ seed = 7
 numpy.random.seed(seed)
 
 df = pd.read_csv("bAQ2016.csv")
-# Format data by using Panda
-# Each row will have our input (3 days) and output (prediction of the following day)
-# e.g: Year, Month, Day(only 1st day), air_q, air_q ... (for consecutive 4 days)
-# df = pd.read_csv("test-data.csv", sep=',|\s', engine='python')
-# df.loc[data['QC_Name'] != 'Valid', 'Value'] = 0
-# df.groupby('Date')['Value'].apply(lambda x: map(str, x)).apply(','.join)
 
 ds = df.values
 
