@@ -10,16 +10,16 @@ import os
 
 NUMBER_OF_DAYS = 4
 #Load all data files
-path =os.getcwd() +'/all-data' # use your path
-allFiles = glob.glob(path + "/*.csv")
-df = pd.DataFrame()
-list_ = []
-for file_ in allFiles:
-    frame = pd.read_csv(file_,sep=',|\s',index_col=None, engine='python')
-    list_.append(frame)
-df = pd.concat(list_)
+# path =os.getcwd() +'/all-data' # use your path
+# allFiles = glob.glob(path + "/*.csv")
+# df = pd.DataFrame()
+# list_ = []
+# for file_ in allFiles:
+#     frame = pd.read_csv(file_,sep=',|\s',index_col=None, engine='python')
+#     list_.append(frame)
+# df = pd.concat(list_)
 
-# df = pd.read_csv("test-data.csv", sep=',|\s', engine='python')
+df = pd.read_csv("not-formatted-data.csv", sep=',|\s', engine='python')
 
 df.loc[df['QC_Name'] != 'Valid', 'Value'] = 0 #invalid record -> 0
 df['Date'] = pd.to_datetime(df['Date'] )      #otherwise row order get messed up
@@ -31,6 +31,6 @@ df_n_days = df_daily.pivot_table(index='Partition', columns='Columns')
 sorted_column_head = sorted(df_n_days.columns, key=lambda x: x[1])
 df_n_days = df_n_days[sorted_column_head]
 # Not necessary to write to csv file
-df_n_days.to_csv('all-data.csv',index=False,header=False, sep=',')
+df_n_days.to_csv('all-data.csv',header=False, sep=',')
 
 print("Completed formatting!")
