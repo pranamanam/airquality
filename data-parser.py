@@ -18,5 +18,5 @@ df_n_days = df_daily.pivot_table(index='Partition', columns='Columns')
 sorted_column_head = sorted(df_n_days.columns, key=lambda x: x[1])
 df_n_days = df_n_days[sorted_column_head]
 # Not necessary to write to csv file
-df_n_days.to_csv('formatted.csv', sep=',')
+df_n_days.to_csv('formatted.csv', header=False, sep=',')
 print("Completed formatting!")
