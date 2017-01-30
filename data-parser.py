@@ -8,7 +8,7 @@ import os
 # Note: header of data file should be (modified):
 # Site,Parameter,Date (LST),Year,Month,Day,Hour,Value,Unit,FooUnit,Duration,QC_Name
 
-NUMBER_OF_DAYS = 8
+NUMBER_OF_DAYS = 10
 #Load all data files
 # path =os.getcwd() +'/all-data' # use your path
 # allFiles = glob.glob(path + "/*.csv")
