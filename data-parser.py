@@ -20,6 +20,7 @@ for file_ in allFiles:
 df = pd.concat(list_)
 
 # df = pd.read_csv("test-data.csv", sep=',|\s', engine='python')
+
 df.loc[df['QC_Name'] != 'Valid', 'Value'] = 0 #invalid record -> 0
 df['Date'] = pd.to_datetime(df['Date'] )      #otherwise row order get messed up
 df_daily = df.pivot_table(index='Date', columns='Hour', values='Value')
@@ -31,4 +32,5 @@ sorted_column_head = sorted(df_n_days.columns, key=lambda x: x[1])
 df_n_days = df_n_days[sorted_column_head]
 # Not necessary to write to csv file
 df_n_days.to_csv('all-data.csv',index=False,header=False, sep=',')
+
 print("Completed formatting!")
