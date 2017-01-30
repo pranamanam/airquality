@@ -8,7 +8,7 @@ import os
 # Note: header of data file should be (modified):
 # Site,Parameter,Date (LST),Year,Month,Day,Hour,Value,Unit,FooUnit,Duration,QC_Name
 
-NUMBER_OF_DAYS = 4
+NUMBER_OF_DAYS = 8
 #Load all data files
 # path =os.getcwd() +'/all-data' # use your path
 # allFiles = glob.glob(path + "/*.csv")
@@ -31,6 +31,6 @@ df_n_days = df_daily.pivot_table(index='Partition', columns='Columns')
 sorted_column_head = sorted(df_n_days.columns, key=lambda x: x[1])
 df_n_days = df_n_days[sorted_column_head]
 # Not necessary to write to csv file
-df_n_days.to_csv('all-data.csv',header=False, sep=',')
+df_n_days.to_csv('all-data-8.csv',header=False, sep=',')
 
 print("Completed formatting!")
