@@ -1,7 +1,7 @@
 import numpy
 import pandas as pd
 from keras.models import Sequential
-from keras.models import model_from_yaml
+from keras.models import model_from_json
 from keras.layers import Dense
 from keras.wrappers.scikit_learn import KerasRegressor
 from sklearn.model_selection import cross_val_score
@@ -26,8 +26,9 @@ Y = dataset[:,72]
 
 print X
 
-
-# define base mode
+#MODELS
+#-----------------------------------------------------------------------------------------
+# Base model
 def baseline_model():
 	# create model
 	model = Sequential()
@@ -47,27 +48,30 @@ def larger_model():
 	# Compile model
 	model.compile(loss='mean_squared_error', optimizer='adam', metrics=['accuracy'])
 	return model		
+#-----------------------------------------------------------------------------------------
 
-# Run model directly
+
+# Choose which model to run
 model = larger_model()
 # Fit the model
 model.fit(X, Y, nb_epoch=150, batch_size=10)
 # evaluate the model
 scores = model.evaluate(X, Y)
 print("%s: %.2f%%" % (model.metrics_names[1], scores[1]*100))
-# serialize model to YAML
-model_yaml = model.to_yaml()
-with open("model.yaml", "w") as yaml_file:
-    yaml_file.write(model_yaml)
+
+# serialize model to JSON
+model_json = model.to_json()
+with open("model.json", "w") as json_file:
+    json_file.write(model_json)
 # serialize weights to HDF5
 model.save_weights("model.h5")
 print("Saved model to disk")
  
-# load YAML and create model
-yaml_file = open('model.yaml', 'r')
-loaded_model_yaml = yaml_file.read()
-yaml_file.close()
-loaded_model = model_from_yaml(loaded_model_yaml)
+# load json and create model
+json_file = open('model.json', 'r')
+loaded_model_json = json_file.read()
+json_file.close()
+loaded_model = model_from_json(loaded_model_json)
 # load weights into new model
 loaded_model.load_weights("model.h5")
 print("Loaded model from disk")
