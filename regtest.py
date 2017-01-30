@@ -18,13 +18,16 @@ numpy.random.seed(seed)
 #evaluate model with standardized dataset
 
 # load dataset
-dataframe = pd.read_csv("all-data.csv", delim_whitespace=False, header=None)
+dataframe = pd.read_csv("all-data-8.csv", delim_whitespace=False, header=None)
 dataset = dataframe.values
+days = 7
+n1 = 24*days+1
+n2 = n1+24
 # split into input (X) and output (Y) variables
 # X = dataset[:,1:169]
 # Y = dataset[:,169:193]
-X = dataset[:,1:73]
-Y = dataset[:,73:97]
+X = dataset[:,1:n1]
+Y = dataset[:,n1:n2]
 
 print X
 
@@ -34,7 +37,7 @@ print X
 def baseline_model():
 	# create model
 	model = Sequential()
-	model.add(Dense(72, input_dim=72, init='normal', activation='relu'))
+	model.add(Dense(n1-1, input_dim=n1-1, init='normal', activation='relu'))
 	model.add(Dense(24, init='normal'))
 	# Compile model
 	model.compile(loss='mean_squared_error', optimizer='adam', metrics=['accuracy'])
@@ -44,7 +47,7 @@ def baseline_model():
 def larger_model():
 	# create model
 	model = Sequential()
-	model.add(Dense(168, input_dim=168, init='normal', activation='relu'))
+	model.add(Dense(n1-1, input_dim=n1-1, init='normal', activation='relu'))
 	model.add(Dense(168, init='normal'))
 	model.add(Dense(24, init='normal'))
 	# Compile model
