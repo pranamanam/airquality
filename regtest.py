@@ -46,7 +46,7 @@ def larger_model():
 	model.add(Dense(72, init='normal', activation='relu'))
 	model.add(Dense(60, init='normal', activation='relu'))
 	model.add(Dense(48, init='normal', activation='relu'))
-	model.add(Dense(64, init='normal', activation='relu'))
+	model.add(Dense(63, init='normal', activation='relu'))
 	model.add(Dense(24, init='normal'))
 	# Compile model
 	model.compile(loss='mean_squared_error', optimizer='adam', metrics=['accuracy'])
