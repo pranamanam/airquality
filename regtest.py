@@ -18,33 +18,33 @@ numpy.random.seed(seed)
 #evaluate model with standardized dataset
 
 # load dataset
-dataframe = pd.read_csv("formatted2.csv", delim_whitespace=False, header=None)
+dataframe = pd.read_csv("formatted8.csv", delim_whitespace=False, header=None)
 dataset = dataframe.values
 # split into input (X) and output (Y) variables
-X = dataset[:,0:72]
-Y = dataset[:,72]
+X = dataset[:,1:169]
+Y = dataset[:,169:193]
 
 print X
 
 #MODELS
 #-----------------------------------------------------------------------------------------
-# Base model
+# Base model with no hidden layers
 def baseline_model():
 	# create model
 	model = Sequential()
-	model.add(Dense(72, input_dim=72, init='normal', activation='relu'))
-	model.add(Dense(1, init='normal'))
+	model.add(Dense(168, input_dim=168, init='normal', activation='relu'))
+	model.add(Dense(24, init='normal'))
 	# Compile model
 	model.compile(loss='mean_squared_error', optimizer='adam', metrics=['accuracy'])
 	return model
 
-#Model with 1 hidden layer
+#Model with hidden layers
 def larger_model():
 	# create model
 	model = Sequential()
-	model.add(Dense(72, input_dim=72, init='normal', activation='relu'))
-	model.add(Dense(6, init='normal', activation='relu'))
-	model.add(Dense(1, init='normal'))
+	model.add(Dense(168, input_dim=168, init='normal', activation='relu'))
+	model.add(Dense(168, init='normal'))
+	model.add(Dense(24, init='normal'))
 	# Compile model
 	model.compile(loss='mean_squared_error', optimizer='adam', metrics=['accuracy'])
 	return model		

@@ -26,22 +26,54 @@ numpy.random.seed(seed)
 df = pd.read_csv("formatted.csv")
 
 ds = df.values
-
+ds = ds[2:,:]
 X = ds[:,1:73]
-Y = ds[:,73:96]
+Y = ds[:,73]
 
+print X, numpy.shape(X)
+raw_input("Press Enter to continue...")
 
-# create model
+# define base mode
+def baseline_model():
+	# create model
+	model = Sequential()
+	model.add(Dense(72, input_dim=72, init='normal', activation='relu'))
+	model.add(Dense(1, init='normal'))
+	# Compile model
+	model.compile(loss='mean_squared_error', optimizer='adam')
+	return model
+
+# fix random seed for reproducibility
+# seed = 7
+# numpy.random.seed(seed)
+# evaluate model with standardized dataset
+# estimator = KerasRegressor(build_fn=baseline_model, nb_epoch=100, batch_size=5, verbose=0)
+# 
+# kfold = KFold(n_splits=10, random_state=seed)
+# results = cross_val_score(estimator, X, Y, cv=kfold)
+# print("Results: %.2f (%.2f) MSE" % (results.mean(), results.std()))
+
+#create model
+
 model = Sequential()
 model.add(Dense(72, input_dim=72, init='normal', activation='relu'))
-model.add(Dense(23, init='normal'))
+model.add(Dense(1, init='normal'))
 
-# Compile model
-model.compile(loss='mean_squared_error', optimizer='adam', metrics=['accuracy'])
+#Compile model
+#Regression -- let's start with MSE"
+model.compile(loss='mean_squared_error', optimizer='rmsprop', metrics=['accuracy'])
 
-# Fit the model
-model.fit(X, Y, nb_epoch=150, batch_size=10)
+#Fit the model
+model.fit(X, Y, nb_epoch=150, batch_size=50)
 
-# evaluate the model
+#evaluate the model
 scores = model.evaluate(X, Y)
 print("%s: %.2f%%" % (model.metrics_names[1], scores[1]*100))
+
+# serialize model to JSON
+#model_json = model.to_json()
+#with open("model.json", "w") as json_file:
+#    json_file.write(model_json)
+# serialize weights to HDF5
+#model.save_weights("model.h5")
+#print("Saved model to disk")
