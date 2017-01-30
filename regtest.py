@@ -1,12 +1,14 @@
 import numpy
 import pandas as pd
 from keras.models import Sequential
+from keras.models import model_from_yaml
 from keras.layers import Dense
 from keras.wrappers.scikit_learn import KerasRegressor
 from sklearn.model_selection import cross_val_score
 from sklearn.model_selection import KFold
 from sklearn.preprocessing import StandardScaler
 from sklearn.pipeline import Pipeline
+
 
 # load dataset
 
@@ -24,17 +26,6 @@ Y = dataset[:,72]
 
 print X
 
-# Run model directly
-# model = Sequential()
-# model.add(Dense(72, input_dim=72, init='normal', activation='relu'))
-# model.add(Dense(1, init='normal'))
-# # Compile model
-# model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
-# # Fit the model
-# model.fit(X, Y, nb_epoch=150, batch_size=10)
-# # evaluate the model
-# scores = model.evaluate(X, Y)
-# print("%s: %.2f%%" % (model.metrics_names[1], scores[1]*100))
 
 # define base mode
 def baseline_model():
@@ -43,7 +34,7 @@ def baseline_model():
 	model.add(Dense(72, input_dim=72, init='normal', activation='relu'))
 	model.add(Dense(1, init='normal'))
 	# Compile model
-	model.compile(loss='mean_squared_error', optimizer='adam')
+	model.compile(loss='mean_squared_error', optimizer='adam', metrics=['accuracy'])
 	return model
 
 #Model with 1 hidden layer
@@ -54,16 +45,44 @@ def larger_model():
 	model.add(Dense(6, init='normal', activation='relu'))
 	model.add(Dense(1, init='normal'))
 	# Compile model
-	model.compile(loss='mean_squared_error', optimizer='adam')
+	model.compile(loss='mean_squared_error', optimizer='adam', metrics=['accuracy'])
 	return model		
 
+# Run model directly
+model = larger_model()
+# Fit the model
+model.fit(X, Y, nb_epoch=150, batch_size=10)
+# evaluate the model
+scores = model.evaluate(X, Y)
+print("%s: %.2f%%" % (model.metrics_names[1], scores[1]*100))
+# serialize model to YAML
+model_yaml = model.to_yaml()
+with open("model.yaml", "w") as yaml_file:
+    yaml_file.write(model_yaml)
+# serialize weights to HDF5
+model.save_weights("model.h5")
+print("Saved model to disk")
+ 
+# load YAML and create model
+yaml_file = open('model.yaml', 'r')
+loaded_model_yaml = yaml_file.read()
+yaml_file.close()
+loaded_model = model_from_yaml(loaded_model_yaml)
+# load weights into new model
+loaded_model.load_weights("model.h5")
+print("Loaded model from disk")
+ 
+# evaluate loaded model on test data
+loaded_model.compile(loss='mean_squared_error', optimizer='rmsprop', metrics=['accuracy'])
+score = loaded_model.evaluate(X, Y, verbose=0)
+print "%s: %.2f%%" % (loaded_model.metrics_names[1], score[1]*100)
 
 #evaluate model with standardized dataset
 #estimator = KerasRegressor(build_fn=baseline_model, nb_epoch=100, batch_size=5, verbose=0)
-estimator = KerasRegressor(build_fn=larger_model, nb_epoch=100, batch_size=5, verbose=0)
-
-kfold = KFold(n_splits=10, random_state=seed)
-results = cross_val_score(estimator, X, Y, cv=kfold)
-print("Results: %.2f (%.2f) MSE" % (results.mean(), results.std()))
+# estimator = KerasRegressor(build_fn=larger_model, nb_epoch=100, batch_size=5, verbose=0)
+# 
+# kfold = KFold(n_splits=10, random_state=seed)
+# results = cross_val_score(estimator, X, Y, cv=kfold)
+# print("Results: %.2f (%.2f) MSE" % (results.mean(), results.std()))
 
 
