@@ -8,6 +8,7 @@ from sklearn.model_selection import cross_val_score
 from sklearn.model_selection import KFold
 from sklearn.preprocessing import StandardScaler
 from sklearn.pipeline import Pipeline
+from matplotlib import pyplot as plt
 
 
 # load dataset
@@ -18,9 +19,9 @@ numpy.random.seed(seed)
 #evaluate model with standardized dataset
 
 # load dataset
-dataframe = pd.read_csv("all-data-8.csv", delim_whitespace=False, header=None)
+dataframe = pd.read_csv("all-data-10.csv", delim_whitespace=False, header=None)
 dataset = dataframe.values
-days = 7
+days = 9
 n1 = 24*days+1
 n2 = n1+24
 # split into input (X) and output (Y) variables
@@ -57,7 +58,7 @@ def larger_model():
 
 
 # Choose which model to run
-model = baseline_model()
+model = larger_model()
 # Fit the model
 model.fit(X, Y, nb_epoch=150, batch_size=10)
 # evaluate the model
