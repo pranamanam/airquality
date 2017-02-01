@@ -3,6 +3,7 @@ import pandas as pd
 from keras.models import Sequential
 from keras.models import model_from_json
 from keras.layers import Dense
+from keras.layers import LSTM
 from keras.wrappers.scikit_learn import KerasRegressor
 from sklearn.model_selection import cross_val_score
 from sklearn.model_selection import KFold
@@ -19,12 +20,13 @@ numpy.random.seed(seed)
 #evaluate model with standardized dataset
 
 # load dataset
-dataframe = pd.read_csv("all-data-10.csv", delim_whitespace=False, header=None)
+dataframe = pd.read_csv("all-data-8.csv", delim_whitespace=False, header=None)
 dataset = dataframe.values
-days = 9
-n1 = 24*days+1
-n2 = n1+24
-n3 = 60
+days = 7
+split = 0.5 #percent of data for training
+n1 = 24*days+1 #input hours 
+n2 = n1+24 
+n3 = int(len(dataset)*split) #var to split data
 # split into input (X) and output (Y) variables (training data)
 X = dataset[0:n3,1:n1]
 Y = dataset[0:n3,n1:n2]
@@ -33,6 +35,8 @@ Y = dataset[0:n3,n1:n2]
 A = dataset[n3:,1:n1]
 B = dataset[n3:,n1:n2]
 
+print(len(X))
+print(len(A))
 
 #MODELS
 #-----------------------------------------------------------------------------------------
@@ -55,7 +59,8 @@ def larger_model():
 	model.add(Dense(24, init='normal'))
 	# Compile model
 	model.compile(loss='mean_squared_error', optimizer='adam', metrics=['accuracy'])
-	return model		
+	return model	
+	
 #-----------------------------------------------------------------------------------------
 
 
@@ -82,14 +87,14 @@ for arr in predictions:
 #print(rounded)
 #print(B)
 
-for i in xrange(len(rounded)/4):
-	plt.title('Beijing Air Quality Prediction')
-	pred, = plt.plot([b+1 for b in xrange(24)], rounded[i], label = 'Predicted Air Quality')
-	act, = plt.plot([b+1 for b in xrange(24)], B[i], label = 'Actual Air Quality')
-	plt.legend([pred, act], ['Predicted Air Quality', 'Actual Air Quality'])
-	plt.xlim(1,24)
-	plt.ylabel('Air Quality (ug/m^3)')
-	plt.xlabel('Hour')
-	plt.show()
+# for i in xrange(len(rounded)/4):
+# 	plt.title('Beijing Air Quality Prediction')
+# 	pred, = plt.plot([b+1 for b in xrange(24)], rounded[i], label = 'Predicted Air Quality')
+# 	act, = plt.plot([b+1 for b in xrange(24)], B[i], label = 'Actual Air Quality')
+# 	plt.legend([pred, act], ['Predicted Air Quality', 'Actual Air Quality'])
+# 	plt.xlim(1,24)
+# 	plt.ylabel('Air Quality (ug/m^3)')
+# 	plt.xlabel('Hour')
+# 	plt.show()
 
 
