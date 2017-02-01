@@ -9,6 +9,7 @@ from sklearn.model_selection import KFold
 from sklearn.preprocessing import StandardScaler
 from sklearn.pipeline import Pipeline
 import matplotlib.pyplot as plt
+from pylab import * 
 
 # load dataset
 
@@ -23,7 +24,7 @@ dataset = dataframe.values
 days = 9
 n1 = 24*days+1
 n2 = n1+24
-n3 = 80
+n3 = 60
 # split into input (X) and output (Y) variables (training data)
 X = dataset[0:n3,1:n1]
 Y = dataset[0:n3,n1:n2]
@@ -62,7 +63,7 @@ def larger_model():
 model = larger_model()
 
 # Fit the model
-model.fit(X, Y, nb_epoch=500, batch_size=10)
+model.fit(X, Y, nb_epoch=250, batch_size=10)
 
 # evaluate the model
 scores = model.evaluate(X, Y)
@@ -81,39 +82,14 @@ for arr in predictions:
 #print(rounded)
 #print(B)
 
-# for i in xrange(len(rounded)):
-# 	plt.plot([b for b in xrange(24)], rounded[i])
-# 	plt.plot([b for b in xrange(24)], rounded[i])
-# 	plt.show()
-
-# serialize model to JSON
-# model_json = model.to_json()
-# with open("model.json", "w") as json_file:
-#     json_file.write(model_json)
-# serialize weights to HDF5
-# model.save_weights("model.h5")
-# print("Saved model to disk")
-#  
-# load json and create model
-# json_file = open('model.json', 'r')
-# loaded_model_json = json_file.read()
-# json_file.close()
-# loaded_model = model_from_json(loaded_model_json)
-# load weights into new model
-# loaded_model.load_weights("model.h5")
-# print("Loaded model from disk")
-#  
-# evaluate loaded model on test data
-# loaded_model.compile(loss='mean_squared_error', optimizer='rmsprop', metrics=['accuracy'])
-# score = loaded_model.evaluate(X, Y, verbose=0)
-# print "%s: %.2f%%" % (loaded_model.metrics_names[1], score[1]*100)
-
-#evaluate model with standardized dataset
-#estimator = KerasRegressor(build_fn=baseline_model, nb_epoch=100, batch_size=5, verbose=0)
-# estimator = KerasRegressor(build_fn=larger_model, nb_epoch=100, batch_size=5, verbose=0)
-# 
-# kfold = KFold(n_splits=10, random_state=seed)
-# results = cross_val_score(estimator, X, Y, cv=kfold)
-# print("Results: %.2f (%.2f) MSE" % (results.mean(), results.std()))
+for i in xrange(len(rounded)/4):
+	plt.title('Beijing Air Quality Prediction')
+	pred, = plt.plot([b+1 for b in xrange(24)], rounded[i], label = 'Predicted Air Quality')
+	act, = plt.plot([b+1 for b in xrange(24)], B[i], label = 'Actual Air Quality')
+	plt.legend([pred, act], ['Predicted Air Quality', 'Actual Air Quality'])
+	plt.xlim(1,24)
+	plt.ylabel('Air Quality (ug/m^3)')
+	plt.xlabel('Hour')
+	plt.show()
 
 
