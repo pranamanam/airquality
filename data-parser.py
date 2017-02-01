@@ -8,7 +8,7 @@ import os
 # Note: header of data file should be (modified):
 # Site,Parameter,Date (LST),Year,Month,Day,Hour,Value,Unit,FooUnit,Duration,QC_Name
 
-NUMBER_OF_DAYS = 10
+NUMBER_OF_DAYS = 5
 #Load all data files
 # path =os.getcwd() +'/all-data' # use your path
 # allFiles = glob.glob(path + "/*.csv")
@@ -20,17 +20,25 @@ NUMBER_OF_DAYS = 10
 # df = pd.concat(list_)
 
 df = pd.read_csv("not-formatted-data.csv", sep=',|\s', engine='python')
+# df = pd.read_csv("test-data.csv", sep=',|\s', engine='python')
 
 df.loc[df['QC_Name'] != 'Valid', 'Value'] = 0 #invalid record -> 0
 df['Date'] = pd.to_datetime(df['Date'] )      #otherwise row order get messed up
 df_daily = df.pivot_table(index='Date', columns='Hour', values='Value')
-df_daily.reset_index(drop=True, inplace=True)
-df_daily['Partition'] = 1+df_daily.index//NUMBER_OF_DAYS
-df_daily['Columns'] = (df_daily.index%NUMBER_OF_DAYS)
-df_n_days = df_daily.pivot_table(index='Partition', columns='Columns')
-sorted_column_head = sorted(df_n_days.columns, key=lambda x: x[1])
-df_n_days = df_n_days[sorted_column_head]
-# Not necessary to write to csv file
-df_n_days.to_csv('all-data-10.csv',header=False, sep=',')
+dfs = []
+# print(df_daily)
+for i in range(NUMBER_OF_DAYS):
+    sliding_df = df_daily.ix[i:]
+    sliding_df.reset_index(drop=True, inplace=True)
+    sliding_df['Partition'] = 1+sliding_df.index//NUMBER_OF_DAYS
+    sliding_df['Columns'] = (sliding_df.index%NUMBER_OF_DAYS)
+    sliding_df = sliding_df.pivot_table(index='Partition', columns='Columns')
+    dfs.append(sliding_df)
+df_inclusive = pd.concat(dfs)
+# print(df_inclusive)
+sorted_column_head = sorted(df_inclusive.columns, key=lambda x: x[1])
+df_inclusive = df_inclusive[sorted_column_head]
+# # Not necessary to write to csv file
+df_inclusive.to_csv('sliding-days-data-5.csv',header=False, sep=',')
 
 print("Completed formatting!")
