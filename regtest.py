@@ -20,11 +20,11 @@ numpy.random.seed(seed)
 #evaluate model with standardized dataset
 
 # load dataset
-dataframe = pd.read_csv("all-data-8.csv", delim_whitespace=False, header=None)
+dataframe = pd.read_csv("sliding-days-data-5.csv", delim_whitespace=False, header=None)
 dataset = dataframe.values
-days = 7
+days = 4
 
-split = 0.5 #percent of data for training
+split = 0.67 #percent of data for training
 n1 = 24*days+1 #input hours 
 n2 = n1+24 
 n3 = int(len(dataset)*split) #var to split data
