@@ -20,21 +20,21 @@ numpy.random.seed(seed)
 #evaluate model with standardized dataset
 
 # load dataset
-dataframe = pd.read_csv("sliding-days-data-5.csv", delim_whitespace=False, header=None)
+dataframe = pd.read_csv("all-data-10.csv", delim_whitespace=False, header=None)
 dataset = dataframe.values
-days = 4
+days = 9
 
-split = 0.9 #percent of data for training
+split = 0.67 #percent of data for training
 n1 = 24*days+1 #input hours 
 n2 = n1+24 
 n3 = int(len(dataset)*split) #var to split data
 
-# split into input (X) and output (Y) variables (training data)
-X = dataset[0:n3,1:n1]
-Y = dataset[0:n3,n1:n2]
+# input (X) and output (Y) variables (training data -- will be split in fit function)
+X = dataset[:,0:n1]
+Y = dataset[:,n1:n2]
 
 # split into input (A) and output (B) variables (test data)
-A = dataset[n3:,1:n1]
+A = dataset[n3:,0:n1]
 B = dataset[n3:,n1:n2]
 
 print(len(X))
@@ -47,7 +47,7 @@ print(len(A))
 def baseline_model():
 	# create model
 	model = Sequential()
-	model.add(Dense(n1-1, input_dim=n1-1, init='normal', activation='relu'))
+	model.add(Dense(n1, input_dim=n1, init='normal', activation='relu'))
 	model.add(Dense(24, init='normal'))
 	# Compile model
 	model.compile(loss='mean_squared_error', optimizer='adam', metrics=['accuracy'])
@@ -57,8 +57,8 @@ def baseline_model():
 def larger_model():
 	# create model
 	model = Sequential()
-	model.add(Dense(n1-1, input_dim=n1-1, init='normal', activation='relu'))
-	model.add(Dense(n1-2, init='normal'))
+	model.add(Dense(n1, input_dim=n1, init='normal', activation='relu'))
+	model.add(Dense(50, init='normal'))
 	model.add(Dense(24, init='normal'))
 	# Compile model
 	model.compile(loss='mean_squared_error', optimizer='adam', metrics=['accuracy'])
@@ -70,26 +70,38 @@ def larger_model():
 model = larger_model()
 
 # Fit the model
-model.fit(X, Y, nb_epoch=500, batch_size=10)
+history = model.fit(X, Y, validation_split=0.33, nb_epoch=1000, batch_size=10)
 
+# summarize history for loss
+plt.plot(history.history['loss'])
+plt.plot(history.history['val_loss'])
+plt.title('MSE Model Evaluation')
+plt.ylabel('Mean Squared Error')
+plt.xlabel('Epoch')
+plt.legend(['Train', 'Test'], loc='upper left')
+plt.show()
+# Fit the model
+# model.fit(X, Y, nb_epoch=10, batch_size=10)
+# 
 # evaluate the model
-scores = model.evaluate(X, Y)
-print()
-print("Training: %s: %.2f%%" % (model.metrics_names[1], scores[1]*100))
-
-scores = model.evaluate(A, B)
-print("Test: %s: %.2f%%" % (model.metrics_names[1], scores[1]*100))
-
+# scores = model.evaluate(X, Y)
+# print()
+# print("Training: %s: %.2f%%" % (model.metrics_names[1], scores[1]*100))
+# print(history.history.keys())
+# scores = model.evaluate(A, B)
+# print("Test: %s: %.2f%%" % (model.metrics_names[1], scores[1]*100))
+# 
 # calculate predictions
 predictions = model.predict(A)
 rounded = []
 for arr in predictions:
 	rounded.append([round(val) for val in arr])
+# 
+# print(rounded)
+# print(B)
+# print("Finished!")
 
-#print(rounded)
-#print(B)
-
-for i in xrange(len(rounded)/4):
+for i in xrange(10):
 	plt.title('Beijing Air Quality Prediction')
 	pred, = plt.plot([b+1 for b in xrange(24)], rounded[i], label = 'Predicted Air Quality')
 	act, = plt.plot([b+1 for b in xrange(24)], B[i], label = 'Actual Air Quality')
