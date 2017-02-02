@@ -58,7 +58,7 @@ def larger_model():
 	# create model
 	model = Sequential()
 	model.add(Dense(n1, input_dim=n1, init='normal', activation='relu'))
-	model.add(Dense(50, init='normal'))
+	model.add(Dense(216, init='normal'))
 	model.add(Dense(24, init='normal'))
 	# Compile model
 	model.compile(loss='mean_squared_error', optimizer='adam', metrics=['accuracy'])
@@ -70,7 +70,7 @@ def larger_model():
 model = larger_model()
 
 # Fit the model
-history = model.fit(X, Y, validation_split=0.33, nb_epoch=1000, batch_size=10)
+history = model.fit(X, Y, validation_split=0.33, nb_epoch=500, batch_size=10)
 
 # summarize history for loss
 plt.plot(history.history['loss'])
@@ -101,7 +101,7 @@ for arr in predictions:
 # print(B)
 # print("Finished!")
 
-for i in xrange(10):
+for i in xrange(len(rounded)/2):
 	plt.title('Beijing Air Quality Prediction')
 	pred, = plt.plot([b+1 for b in xrange(24)], rounded[i], label = 'Predicted Air Quality')
 	act, = plt.plot([b+1 for b in xrange(24)], B[i], label = 'Actual Air Quality')

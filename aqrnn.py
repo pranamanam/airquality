@@ -42,11 +42,11 @@ testX = numpy.reshape(testX, (testX.shape[0], 1, testX.shape[1]))
 
 # create and fit the LSTM network
 model = Sequential()
-model.add(LSTM(4, input_dim=n1))
+model.add(LSTM(n1, input_dim=n1, return_sequences=True))
+model.add(LSTM(n1))
 model.add(Dense(24))
 model.compile(loss='mean_squared_error', optimizer='adam')
-history = model.fit(trainX, trainY, nb_epoch=100, batch_size=1, verbose=2)
-
+history = model.fit(trainX, trainY, validation_split=0.33, nb_epoch=100, batch_size=1, verbose=2)
 # make predictions
 trainPredict = model.predict(trainX)
 testPredict = model.predict(testX)
@@ -70,20 +70,19 @@ print testY
 print testPredict
 
 plt.plot(history.history['loss'])
-plt.plot(history.history['val_loss'])
-plt.title('MSE Model Evaluation')
+plt.title('MSE RNN Model Evaluation')
 plt.ylabel('Mean Squared Error')
 plt.xlabel('Epoch')
 plt.legend(['Train', 'Test'], loc='upper left')
 plt.show()
 
-for i in xrange(10):
+for i in xrange(len(testPredict)/2):
 	plt.title('Beijing Air Quality Prediction')
 	pred, = plt.plot([b for b in xrange(24)], testPredict[i], label = 'Predicted Air Quality')
 	act, = plt.plot([b for b in xrange(24)], testY[i], label = 'Actual Air Quality')
 	plt.legend([pred, act], ['Predicted Air Quality', 'Actual Air Quality'])
 	plt.xlim(0,23)
 	plt.xticks(xrange(24))
-	plt.ylabel('Scaled Air Quality')
+	plt.ylabel('Scaled Air Quality (0-1)')
 	plt.xlabel('Hour')
 	plt.show()
