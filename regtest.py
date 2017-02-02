@@ -89,14 +89,15 @@ for arr in predictions:
 #print(rounded)
 #print(B)
 
-# for i in xrange(len(rounded)/4):
-# 	plt.title('Beijing Air Quality Prediction')
-# 	pred, = plt.plot([b+1 for b in xrange(24)], rounded[i], label = 'Predicted Air Quality')
-# 	act, = plt.plot([b+1 for b in xrange(24)], B[i], label = 'Actual Air Quality')
-# 	plt.legend([pred, act], ['Predicted Air Quality', 'Actual Air Quality'])
-# 	plt.xlim(1,24)
-# 	plt.ylabel('Air Quality (ug/m^3)')
-# 	plt.xlabel('Hour')
-# 	plt.show()
+for i in xrange(len(rounded)/4):
+	plt.title('Beijing Air Quality Prediction')
+	pred, = plt.plot([b+1 for b in xrange(24)], rounded[i], label = 'Predicted Air Quality')
+	act, = plt.plot([b+1 for b in xrange(24)], B[i], label = 'Actual Air Quality')
+	plt.legend([pred, act], ['Predicted Air Quality', 'Actual Air Quality'])
+	plt.xlim(1,24)
+	plt.xticks(xrange(24))
+	plt.ylabel('Air Quality (ug/m^3)')
+	plt.xlabel('Hour')
+	plt.show()
 
 
